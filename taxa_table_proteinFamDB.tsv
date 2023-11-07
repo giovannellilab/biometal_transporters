@@ -1,0 +1,138 @@
+	metal	group_metal	protein_fam_metal	protein_fam
+cobalt_g1	cobalt	cobalt_g1	cobalt CbiM family	CbiM family
+cobalt_g2	cobalt	cobalt_g2	cobalt Cation transport ATPase (P-type) (TC 3.A.3) family, Type IB subfamily	Cation transport ATPase (P-type) (TC 3.A.3) family, Type IB subfamily
+cobalt_g3	cobalt	cobalt_g3	cobalt CorA metal ion transporter (MIT) (TC 1.A.35) family	CorA metal ion transporter (MIT) (TC 1.A.35) family
+cobalt_g4	cobalt	cobalt_g4	cobalt NRAMP family	NRAMP family
+cobalt_g5	cobalt	cobalt_g5	cobalt ZIP transporter (TC 2.A.5) family, ZupT subfamily	ZIP transporter (TC 2.A.5) family, ZupT subfamily
+cobalt_g6	cobalt	cobalt_g6	cobalt Bacterial solute-binding protein 5 family	Bacterial solute-binding protein 5 family
+cobalt_g7	cobalt	cobalt_g7	cobalt ABC transporter superfamily	ABC transporter superfamily
+cobalt_g8	cobalt	cobalt_g8	cobalt ABC transporter superfamily, Energy-coupling factor EcfA family	ABC transporter superfamily, Energy-coupling factor EcfA family
+cobalt_g9	cobalt	cobalt_g9	cobalt NiCoT transporter (TC 2.A.52) family, RcnA subfamily	NiCoT transporter (TC 2.A.52) family, RcnA subfamily
+cobalt_g10	cobalt	cobalt_g10	cobalt ABC transporter superfamily, Cobalt importer (TC 3.A.1.18.1) family	ABC transporter superfamily, Cobalt importer (TC 3.A.1.18.1) family
+cobalt_g11	cobalt	cobalt_g11	cobalt Binding-protein-dependent transport system permease family	Binding-protein-dependent transport system permease family
+cobalt_g12	cobalt	cobalt_g12	cobalt CbiM family; CbiQ family	CbiM family; CbiQ family
+cobalt_g13	cobalt	cobalt_g13	cobalt CbiQ family	CbiQ family
+cobalt_g14	cobalt	cobalt_g14	cobalt Cation diffusion facilitator (CDF) transporter (TC 2.A.4) family, SLC30A subfamily	Cation diffusion facilitator (CDF) transporter (TC 2.A.4) family, SLC30A subfamily
+cobalt_g15	cobalt	cobalt_g15	cobalt CbiN family	CbiN family
+cobalt_g16	cobalt	cobalt_g16	cobalt NiCoT transporter (TC 2.A.52) family	NiCoT transporter (TC 2.A.52) family
+iron_g1	iron	iron_g1	iron Mycobacterial porin (TC 1.B.24) family	Mycobacterial porin (TC 1.B.24) family
+iron_g2	iron	iron_g2	iron TonB family	TonB family
+iron_g3	iron	iron_g3	iron Outer membrane factor (OMF) (TC 1.B.17) family	Outer membrane factor (OMF) (TC 1.B.17) family
+iron_g4	iron	iron_g4	iron TonB-dependent receptor family	TonB-dependent receptor family
+iron_g5	iron	iron_g5	iron Binding-protein-dependent transport system permease family, FecCD subfamily	Binding-protein-dependent transport system permease family, FecCD subfamily
+iron_g6	iron	iron_g6	iron ABC transporter superfamily, Iron (Fe3+)-hydroxamate importer (TC 3.A.1.14.7) family	ABC transporter superfamily, Iron (Fe3+)-hydroxamate importer (TC 3.A.1.14.7) family
+iron_g7	iron	iron_g7	iron Bacterial solute-binding protein 8 family	Bacterial solute-binding protein 8 family
+iron_g8	iron	iron_g8	iron NRAMP family	NRAMP family
+iron_g9	iron	iron_g9	iron ZIP transporter (TC 2.A.5) family, ZupT subfamily	ZIP transporter (TC 2.A.5) family, ZupT subfamily
+iron_g10	iron	iron_g10	iron Ferritin family, Prokaryotic subfamily	Ferritin family, Prokaryotic subfamily
+iron_g11	iron	iron_g11	iron ABC transporter superfamily	ABC transporter superfamily
+iron_g12	iron	iron_g12	iron Bacterioferritin family	Bacterioferritin family
+iron_g13	iron	iron_g13	iron Fre/LuxG FAD/NAD(P) flavoprotein oxidoreductase family	Fre/LuxG FAD/NAD(P) flavoprotein oxidoreductase family
+iron_g14	iron	iron_g14	iron Fes family	Fes family
+iron_g15	iron	iron_g15	iron Bacterial solute-binding protein 5 family	Bacterial solute-binding protein 5 family
+iron_g16	iron	iron_g16	iron DyP-type peroxidase family, EfeB subfamily	DyP-type peroxidase family, EfeB subfamily
+iron_g17	iron	iron_g17	iron TRAFAC class TrmE-Era-EngA-EngB-Septin-like GTPase superfamily, FeoB GTPase (TC 9.A.8) family	TRAFAC class TrmE-Era-EngA-EngB-Septin-like GTPase superfamily, FeoB GTPase (TC 9.A.8) family
+iron_g18	iron	iron_g18	iron DyP-type peroxidase family	DyP-type peroxidase family
+iron_g19	iron	iron_g19	iron Cation diffusion facilitator (CDF) transporter (TC 2.A.4) family, FieF subfamily	Cation diffusion facilitator (CDF) transporter (TC 2.A.4) family, FieF subfamily
+iron_g20	iron	iron_g20	iron CcmE/CycJ family	CcmE/CycJ family
+iron_g21	iron	iron_g21	iron Ferritin-like superfamily, Prokaryotic family	Ferritin-like superfamily, Prokaryotic family
+iron_g22	iron	iron_g22	iron Ferritin-like superfamily, Bacterioferritin family	Ferritin-like superfamily, Bacterioferritin family
+iron_g23	iron	iron_g23	iron ABC transporter superfamily, Siderophore-Fe(3+) uptake transporter (SIUT) (TC 3.A.1.21) family	ABC transporter superfamily, Siderophore-Fe(3+) uptake transporter (SIUT) (TC 3.A.1.21) family
+iron_g24	iron	iron_g24	iron Ferritin-like superfamily, EncFtn family	Ferritin-like superfamily, EncFtn family
+iron_g25	iron	iron_g25	iron SIP oxidoreductase family	SIP oxidoreductase family
+iron_g26	iron	iron_g26	iron Bacterial solute-binding protein 1 family	Bacterial solute-binding protein 1 family
+iron_g27	iron	iron_g27	iron Ferroportin (FP) (TC 2.A.100) family	Ferroportin (FP) (TC 2.A.100) family
+iron_g28	iron	iron_g28	iron Antibiotic biosynthesis monooxygenase family, Heme-degrading monooxygenase IsdG subfamily	Antibiotic biosynthesis monooxygenase family, Heme-degrading monooxygenase IsdG subfamily
+iron_g29	iron	iron_g29	iron IsdB family	IsdB family
+iron_g30	iron	iron_g30	iron IsdC family	IsdC family
+iron_g31	iron	iron_g31	iron Encapsulin family, Family 1 subfamily	Encapsulin family, Family 1 subfamily
+iron_g32	iron	iron_g32	iron Cation diffusion facilitator (CDF) transporter (TC 2.A.4) family	Cation diffusion facilitator (CDF) transporter (TC 2.A.4) family
+iron_g33	iron	iron_g33	iron Bacterial solute-binding protein 9 family, Lipoprotein receptor antigen (Lrai) subfamily	Bacterial solute-binding protein 9 family, Lipoprotein receptor antigen (Lrai) subfamily
+iron_g34	iron	iron_g34	iron CcmC/CycZ/HelC family	CcmC/CycZ/HelC family
+iron_g35	iron	iron_g35	iron Binding-protein-dependent transport system permease family, OppBC subfamily	Binding-protein-dependent transport system permease family, OppBC subfamily
+iron_g36	iron	iron_g36	iron Sigma-70 factor family, ECF subfamily	Sigma-70 factor family, ECF subfamily
+iron_g37	iron	iron_g37	iron Major facilitator superfamily, EntS (TC 2.A.1.38) family	Major facilitator superfamily, EntS (TC 2.A.1.38) family
+iron_g38	iron	iron_g38	iron ABC transporter superfamily, CcmA exporter (TC 3.A.1.107) family	ABC transporter superfamily, CcmA exporter (TC 3.A.1.107) family
+iron_g39	iron	iron_g39	iron Oxidase-dependent Fe transporter (OFeT) (TC 9.A.10.1) family	Oxidase-dependent Fe transporter (OFeT) (TC 9.A.10.1) family
+iron_g40	iron	iron_g40	iron UPF0014 family	UPF0014 family
+iron_g41	iron	iron_g41	iron CbxX/CfxQ family	CbxX/CfxQ family
+iron_g42	iron	iron_g42	iron Bacterial solute-binding protein 9 family	Bacterial solute-binding protein 9 family
+iron_g43	iron	iron_g43	iron ABC transporter superfamily, CcmA exporter (TC 3.A.1.107) family; CcmE/CycJ family	ABC transporter superfamily, CcmA exporter (TC 3.A.1.107) family; CcmE/CycJ family
+iron_g44	iron	iron_g44	iron ATP-dependent AMP-binding enzyme family	ATP-dependent AMP-binding enzyme family
+iron_g45	iron	iron_g45	iron FeoA family; TRAFAC class TrmE-Era-EngA-EngB-Septin-like GTPase superfamily, FeoB GTPase (TC 9.A.8) family	FeoA family; TRAFAC class TrmE-Era-EngA-EngB-Septin-like GTPase superfamily, FeoB GTPase (TC 9.A.8) family
+iron_g46	iron	iron_g46	iron Ferritin-like superfamily; Encapsulin family, Family 1 subfamily	Ferritin-like superfamily; Encapsulin family, Family 1 subfamily
+iron_g47	iron	iron_g47	iron Major facilitator superfamily	Major facilitator superfamily
+iron_g48	iron	iron_g48	iron Binding-protein-dependent transport system permease family	Binding-protein-dependent transport system permease family
+iron_g49	iron	iron_g49	iron ABC transporter superfamily, Fe(3+) ion importer (TC 3.A.1.10) family	ABC transporter superfamily, Fe(3+) ion importer (TC 3.A.1.10) family
+iron_g50	iron	iron_g50	iron CcmB/CycW/HelB family	CcmB/CycW/HelB family
+iron_g51	iron	iron_g51	iron CcmD/CycX/HelD family	CcmD/CycX/HelD family
+iron_g52	iron	iron_g52	iron FeoA family	FeoA family
+iron_g53	iron	iron_g53	iron WzzB/Cld/Rol family	WzzB/Cld/Rol family
+iron_g54	iron	iron_g54	iron CcmF/CycK/Ccl1/NrfE/CcsA family	CcmF/CycK/Ccl1/NrfE/CcsA family
+iron_g55	iron	iron_g55	iron TonB-dependent receptor family, Hemoglobin/haptoglobin binding protein subfamily	TonB-dependent receptor family, Hemoglobin/haptoglobin binding protein subfamily
+iron_g56	iron	iron_g56	iron FeoC family	FeoC family
+iron_g57	iron	iron_g57	iron Binding-protein-dependent transport system permease family, FbpB subfamily	Binding-protein-dependent transport system permease family, FbpB subfamily
+iron_g58	iron	iron_g58	iron Monovalent cation:proton antiporter 2 (CPA2) transporter (TC 2.A.37) family	Monovalent cation:proton antiporter 2 (CPA2) transporter (TC 2.A.37) family
+iron_g59	iron	iron_g59	iron Cation transport ATPase (P-type) (TC 3.A.3) family, Type IB subfamily	Cation transport ATPase (P-type) (TC 3.A.3) family, Type IB subfamily
+iron_g60	iron	iron_g60	iron ABC-3 integral membrane protein family	ABC-3 integral membrane protein family
+copper_g1	copper	copper_g1	copper Cation transport ATPase (P-type) (TC 3.A.3) family, Type IB subfamily	Cation transport ATPase (P-type) (TC 3.A.3) family, Type IB subfamily
+copper_g2	copper	copper_g2	copper NosZ family; Cytochrome c oxidase subunit 2 family	NosZ family; Cytochrome c oxidase subunit 2 family
+copper_g3	copper	copper_g3	copper Resistance-nodulation-cell division (RND) (TC 2.A.6) family	Resistance-nodulation-cell division (RND) (TC 2.A.6) family
+copper_g4	copper	copper_g4	copper Outer membrane factor (OMF) (TC 1.B.17) family	Outer membrane factor (OMF) (TC 1.B.17) family
+copper_g5	copper	copper_g5	copper Membrane fusion protein (MFP) (TC 8.A.1) family	Membrane fusion protein (MFP) (TC 8.A.1) family
+copper_g6	copper	copper_g6	copper ABC transporter superfamily	ABC transporter superfamily
+copper_g7	copper	copper_g7	copper Bacterial solute-binding protein 5 family	Bacterial solute-binding protein 5 family
+copper_g8	copper	copper_g8	copper Bacterial solute-binding protein 9 family, Lipoprotein receptor antigen (Lrai) subfamily	Bacterial solute-binding protein 9 family, Lipoprotein receptor antigen (Lrai) subfamily
+copper_g9	copper	copper_g9	copper Binding-protein-dependent transport system permease family	Binding-protein-dependent transport system permease family
+copper_g10	copper	copper_g10	copper CopC family; CopD family	CopC family; CopD family
+copper_g11	copper	copper_g11	copper CopC family	CopC family
+copper_g12	copper	copper_g12	copper F420-dependent NADP reductase family	F420-dependent NADP reductase family
+copper_g13	copper	copper_g13	copper Major facilitator superfamily	Major facilitator superfamily
+copper_g14	copper	copper_g14	copper CopD family	CopD family
+nickel_g1	nickel	nickel_g1	nickel CorA metal ion transporter (MIT) (TC 1.A.35) family	CorA metal ion transporter (MIT) (TC 1.A.35) family
+nickel_g2	nickel	nickel_g2	nickel Bacterial solute-binding protein 5 family	Bacterial solute-binding protein 5 family
+nickel_g3	nickel	nickel_g3	nickel ABC transporter superfamily	ABC transporter superfamily
+nickel_g4	nickel	nickel_g4	nickel Cation transport ATPase (P-type) (TC 3.A.3) family, Type IB subfamily	Cation transport ATPase (P-type) (TC 3.A.3) family, Type IB subfamily
+nickel_g5	nickel	nickel_g5	nickel NiCoT transporter (TC 2.A.52) family	NiCoT transporter (TC 2.A.52) family
+nickel_g6	nickel	nickel_g6	nickel Binding-protein-dependent transport system permease family, OppBC subfamily	Binding-protein-dependent transport system permease family, OppBC subfamily
+nickel_g7	nickel	nickel_g7	nickel NiCoT transporter (TC 2.A.52) family, RcnA subfamily	NiCoT transporter (TC 2.A.52) family, RcnA subfamily
+nickel_g8	nickel	nickel_g8	nickel Binding-protein-dependent transport system permease family	Binding-protein-dependent transport system permease family
+nickel_g9	nickel	nickel_g9	nickel Binding-protein-dependent transport system permease family; OsmX family	Binding-protein-dependent transport system permease family; OsmX family
+nickel_g10	nickel	nickel_g10	nickel TonB-dependent receptor family	TonB-dependent receptor family
+nickel_g11	nickel	nickel_g11	nickel CbiQ family	CbiQ family
+nickel_g12	nickel	nickel_g12	nickel CbiM family, NikM subfamily	CbiM family, NikM subfamily
+nickel_g13	nickel	nickel_g13	nickel ABC transporter superfamily, Nickel importer (TC 3.A.1.5.3) family	ABC transporter superfamily, Nickel importer (TC 3.A.1.5.3) family
+tungstate_g1	tungstate	tungstate_g1	tungstate Bacterial solute-binding protein ModA family	Bacterial solute-binding protein ModA family
+tungstate_g2	tungstate	tungstate_g2	tungstate ABC transporter superfamily, Molybdate importer (TC 3.A.1.8) family	ABC transporter superfamily, Molybdate importer (TC 3.A.1.8) family
+tungstate_g3	tungstate	tungstate_g3	tungstate Binding-protein-dependent transport system permease family, CysTW subfamily	Binding-protein-dependent transport system permease family, CysTW subfamily
+manganese_g1	manganese	manganese_g1	manganese NRAMP family	NRAMP family
+manganese_g2	manganese	manganese_g2	manganese Cation transport ATPase (P-type) (TC 3.A.3) family, Type IB subfamily	Cation transport ATPase (P-type) (TC 3.A.3) family, Type IB subfamily
+manganese_g3	manganese	manganese_g3	manganese MntP (TC 9.B.29) family	MntP (TC 9.B.29) family
+manganese_g4	manganese	manganese_g4	manganese ABC transporter superfamily	ABC transporter superfamily
+zinc_g1	zinc	zinc_g1	zinc ZIP transporter (TC 2.A.5) family	ZIP transporter (TC 2.A.5) family
+zinc_g2	zinc	zinc_g2	zinc Cation transport ATPase (P-type) (TC 3.A.3) family, Type IB subfamily	Cation transport ATPase (P-type) (TC 3.A.3) family, Type IB subfamily
+zinc_g3	zinc	zinc_g3	zinc ZIP transporter (TC 2.A.5) family, ZupT subfamily	ZIP transporter (TC 2.A.5) family, ZupT subfamily
+zinc_g4	zinc	zinc_g4	zinc Inorganic phosphate transporter (PiT) (TC 2.A.20) family, Pit subfamily	Inorganic phosphate transporter (PiT) (TC 2.A.20) family, Pit subfamily
+zinc_g5	zinc	zinc_g5	zinc Cation diffusion facilitator (CDF) transporter (TC 2.A.4) family, SLC30A subfamily	Cation diffusion facilitator (CDF) transporter (TC 2.A.4) family, SLC30A subfamily
+zinc_g6	zinc	zinc_g6	zinc Bacterial solute-binding protein 9 family	Bacterial solute-binding protein 9 family
+zinc_g7	zinc	zinc_g7	zinc CorA metal ion transporter (MIT) (TC 1.A.35) family	CorA metal ion transporter (MIT) (TC 1.A.35) family
+zinc_g8	zinc	zinc_g8	zinc Cation diffusion facilitator (CDF) transporter (TC 2.A.4) family, FieF subfamily	Cation diffusion facilitator (CDF) transporter (TC 2.A.4) family, FieF subfamily
+zinc_g9	zinc	zinc_g9	zinc Bacterial solute-binding protein 5 family	Bacterial solute-binding protein 5 family
+zinc_g10	zinc	zinc_g10	zinc ABC transporter superfamily	ABC transporter superfamily
+zinc_g11	zinc	zinc_g11	zinc Bacterial solute-binding protein 9 family, Lipoprotein receptor antigen (Lrai) subfamily	Bacterial solute-binding protein 9 family, Lipoprotein receptor antigen (Lrai) subfamily
+zinc_g12	zinc	zinc_g12	zinc ABC transporter superfamily, Zinc importer (TC 3.A.1.15.5) family	ABC transporter superfamily, Zinc importer (TC 3.A.1.15.5) family
+zinc_g13	zinc	zinc_g13	zinc NRAMP family	NRAMP family
+zinc_g14	zinc	zinc_g14	zinc Binding-protein-dependent transport system permease family	Binding-protein-dependent transport system permease family
+zinc_g15	zinc	zinc_g15	zinc TonB-dependent receptor family	TonB-dependent receptor family
+zinc_g16	zinc	zinc_g16	zinc ABC-3 integral membrane protein family	ABC-3 integral membrane protein family
+zinc_g17	zinc	zinc_g17	zinc Cation diffusion facilitator (CDF) transporter (TC 2.A.4) family	Cation diffusion facilitator (CDF) transporter (TC 2.A.4) family
+molybdate_g1	molybdate	molybdate_g1	molybdate ModE family	ModE family
+molybdate_g2	molybdate	molybdate_g2	molybdate Bacterial solute-binding protein ModA family	Bacterial solute-binding protein ModA family
+molybdate_g3	molybdate	molybdate_g3	molybdate ABC transporter superfamily	ABC transporter superfamily
+molybdate_g4	molybdate	molybdate_g4	molybdate ABC transporter superfamily, Sulfate/tungstate importer (TC 3.A.1.6) family	ABC transporter superfamily, Sulfate/tungstate importer (TC 3.A.1.6) family
+molybdate_g5	molybdate	molybdate_g5	molybdate ABC transporter superfamily, Molybdate importer (TC 3.A.1.8) family	ABC transporter superfamily, Molybdate importer (TC 3.A.1.8) family
+molybdate_g6	molybdate	molybdate_g6	molybdate Binding-protein-dependent transport system permease family, CysTW subfamily	Binding-protein-dependent transport system permease family, CysTW subfamily
+magnesium_g1	magnesium	magnesium_g1	magnesium CorA metal ion transporter (MIT) (TC 1.A.35) family	CorA metal ion transporter (MIT) (TC 1.A.35) family
+magnesium_g2	magnesium	magnesium_g2	magnesium Cation transport ATPase (P-type) (TC 3.A.3) family, Type IIIB subfamily	Cation transport ATPase (P-type) (TC 3.A.3) family, Type IIIB subfamily
+magnesium_g3	magnesium	magnesium_g3	magnesium SLC41A transporter family	SLC41A transporter family
+magnesium_g4	magnesium	magnesium_g4	magnesium Mycobacterial PPE family	Mycobacterial PPE family
