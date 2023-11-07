@@ -2,6 +2,8 @@
 
 ### Conda environment: hydrogenase
 
+Metals list
+
 Iron ion transport:
 (GO:0006826) AND (reviewed:true) AND ((taxonomy_id:2) OR (taxonomy_id:2157))
 
