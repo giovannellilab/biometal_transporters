@@ -1,6 +1,6 @@
 # Evolmar metal transporters
 
-Conda environment: hydrogenase
+### Conda environment: hydrogenase
 
 Iron ion transport:
 (GO:0006826) AND (reviewed:true) AND ((taxonomy_id:2) OR (taxonomy_id:2157))
