@@ -1,0 +1,8 @@
+mifaser_custom.simg
+/slurm_recap
+/results_ibisco
+/.ipynb_checkpoints
+/.venv
+/*_templates_file
+*.zip
+mifaser_counts_*.tsv
