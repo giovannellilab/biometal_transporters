@@ -1,0 +1,777 @@
+---
+title: "R Notebook"
+---
+
+```{r}
+library(phyloseq)
+library(ggplot2)
+library(vegan)
+library(viridis)
+library(tidyverse)
+library(ggrepel)
+library(corrplot)
+library(microbiome)
+```
+
+
+```{r}
+
+
+# Setting up the Giovannelli Lab plot theme
+theme_glab <- function(base_size = 11,
+                    base_family = "",
+                    base_line_size = base_size / 180,
+                    base_rect_size = base_size / 180) {
+   
+    font <- "Helvetica" #assign font family up front
+   
+    theme_bw(base_size = base_size,
+                base_family = base_family,
+                base_line_size = base_line_size) %+replace%
+    theme(
+        legend.background =  element_blank(),
+        legend.title =       element_text(color = rgb(100, 100, 100, maxColorValue = 255),
+                                          size = rel(0.65),
+                                         hjust = 0),
+        legend.text =        element_text(color = rgb(100, 100, 100, maxColorValue = 255),
+                                          size = rel(0.65)),
+        legend.key.size =    unit(0.8, "lines"),
+     
+      plot.title = element_text(
+        color = rgb(100, 100, 100, maxColorValue = 255),
+        hjust = 0),
+       
+      axis.title = element_text(
+        color = rgb(100, 100, 100, maxColorValue = 255),
+        size = rel(0.65)),
+      axis.text = element_text(
+        color = rgb(100, 100, 100, maxColorValue = 255),
+        size = rel(0.65)),
+       
+      plot.caption = element_text(
+        color = rgb(100, 100, 100, maxColorValue = 255),
+        size = rel(0.35),
+        hjust = 1),
+       
+      panel.grid.major = element_blank(),  
+      panel.grid.minor = element_blank(),  
+      panel.border = element_rect(fill = NA, colour = rgb(100, 100, 100, maxColorValue = 255)),
+
+     
+      complete = TRUE
+    )
+}
+
+
+```
+
+
+```{r}
+
+# Importing the data
+dataset <- read.csv("mifaser_counts_multiMetalDB.tsv", header=T, sep="\t", row.names=1)
+env_dataset <- read.csv("./env_datasets/evolmar_env_dataset_metals_F_S.csv", header=T, sep=",", row.names=1)
+tax <- as.matrix(read.csv("taxa_table_multiMetalDB.csv", header=T, sep=",", row.names=1))
+
+
+```
+
+
+```{r}
+dataset
+
+```
+
+
+```{r}
+env_dataset
+```
+
+```{r}
+
+phy <- phyloseq(
+  otu_table(dataset, taxa_are_rows = T), 
+  sample_data(env_dataset), 
+  tax_table(tax)
+)
+phy
+
+phy = subset_samples(phy, sample_names(phy) != "CR19_EP_F")
+```
+
+
+```{r}
+norm <- transform_sample_counts(phy, function(x) ((x / sum(x, na.rm=T))*median(colSums(otu_table(phy), na.rm=T))))
+norm
+```
+
+
+```{r}
+relat_norm <- transform_sample_counts(norm, function(x) ((x / sum(x, na.rm=T))))
+```
+
+
+
+
+```{r fig.height=15, fig.width=20}
+# Plot Relative Abundance by phyla for each station divide by factor1
+plot_bar(relat_norm, fill="multi_metal") +
+  labs(x="", y="Relative abundance (%)", fill="multi_metal") +
+  theme_glab(base_size = 20) +
+  theme(axis.text.x = element_text(angle = 70, size = 0), legend.position = "bottom") +
+  facet_grid(~expID, drop = T, scales = "free_x", space = "free_x")
+  
+```
+
+
+```{r fig.height=15, fig.width=20}
+
+multimet <- tax_glom(relat_norm, "multi_metal", NArm = F )
+top5 <- sort(taxa_sums(multimet), decreasing = T)[1:5]
+multimet5 <- prune_taxa(names(top5), multimet)
+
+plot_bar(multimet5, fill="multi_metal") +
+  labs(x="", y="Relative abundance (%)", fill="multi_metal") +
+  theme_glab(base_size = 20) +
+  theme(axis.text.x = element_text(angle = 70, size = 0)) +
+  facet_grid(~expID, drop = T, scales = "free_x", space = "free_x")
+```
+
+
+```{r}
+
+## Testing for differences in alpha diversity between the Locations
+prok_alpha_div <- data.frame(estimate_richness(phy, measures=c("Shannon")), 
+                             estimate_richness(phy, measures=c("Simpson")),
+                             estimate_richness(phy, measures=c("Observed")),
+                             data.frame(sample_data(phy)$lat),
+                             data.frame(sample_data(phy)$temp),
+                             data.frame(sample_data(phy)$ph),
+                             data.frame(sample_data(phy)$rock_type),
+                             data.frame(sample_data(phy)$h2s))
+
+
+
+colnames(prok_alpha_div) <- c ("shannon","simpson","observed", "lat", "temp", "ph", 
+  "rock_type", "h2s"  )
+prok_alpha_div
+```
+
+
+```{r}
+# lat
+kruskal.test(prok_alpha_div$shannon~prok_alpha_div$lat)
+# kruskal.test(prok_alpha_div$simpson~prok_alpha_div$lat)
+# kruskal.test(prok_alpha_div$observed~prok_alpha_div$lat)
+
+# Temp
+kruskal.test(prok_alpha_div$shannon~prok_alpha_div$temp)
+# kruskal.test(prok_alpha_div$simpson~prok_alpha_div$temp)
+# kruskal.test(prok_alpha_div$observed~prok_alpha_div$temp)
+
+# ph
+kruskal.test(prok_alpha_div$shannon~prok_alpha_div$ph)
+# kruskal.test(prok_alpha_div$simpson~prok_alpha_div$ph)
+# kruskal.test(prok_alpha_div$observed~prok_alpha_div$ph)
+
+# h2s
+kruskal.test(prok_alpha_div$shannon~prok_alpha_div$h2s)
+# kruskal.test(prok_alpha_div$simpson~prok_alpha_div$h2s)
+# kruskal.test(prok_alpha_div$observed~prok_alpha_div$h2s)
+
+# rock_type
+kruskal.test(prok_alpha_div$shannon~prok_alpha_div$rock_type)
+# kruskal.test(prok_alpha_div$simpson~prok_alpha_div$rock_type)
+# kruskal.test(prok_alpha_div$observed~prok_alpha_div$rock_type)
+
+```
+
+
+```{r}
+ggplot(prok_alpha_div, aes(x=temp,y=shannon)) +
+  geom_point(aes(fill=ph),size=3,stroke=.25,shape=21)  +
+  scale_fill_viridis(option="plasma") +
+  # geom_text(aes(label= station), size=5, hjust=-0.1, vjust=2.2) +
+  stat_poly_eq(formula = y ~ x, aes(label = paste(..rr.label.., sep = "~~~~")), parse = TRUE, size=7) +
+  geom_smooth(method=lm, formula= y~x,  se=FALSE,color="red",size=.4) +
+  # xlab("Latitude") + 
+  # ggtitle("Shannon vs Latitude") + 
+  theme_glab()
+
+
+ggsave("plots_presentazione_evolmar/mm_2.png", dpi=300)
+
+```
+
+
+```{r}
+ggplot(prok_alpha_div,aes(x=ph,y=shannon)) +
+  geom_point(aes(fill=temp),size=3,stroke=.25,shape=21)  +
+  scale_fill_viridis(option="plasma") +
+  # geom_text(aes(label= station), size=5, hjust=-0.1, vjust=2.2) +
+  stat_poly_eq(formula = y ~ x, aes(label = paste(..rr.label.., sep = "~~~~")), parse = TRUE, size=7) +
+  geom_smooth(method=lm, formula= y~x,  se=FALSE,color="red",size=.4) +
+  # xlab("Latitude") + 
+  # ggtitle("Shannon vs Latitude") + 
+  theme_glab()
+
+ggsave("plots_presentazione_evolmar/mm_3.png", dpi=300)
+
+```
+
+
+```{r}
+ggplot(prok_alpha_div,aes(x=h2s,y=shannon)) +
+  geom_point(aes(fill=temp),size=3,stroke=.25,shape=21)  +
+  scale_fill_viridis(option="plasma") +
+  # geom_text(aes(label= station), size=5, hjust=-0.1, vjust=2.2) +
+  stat_poly_eq(formula = y ~ x, aes(label = paste(..rr.label.., sep = "~~~~")), parse = TRUE, size=7) +
+  geom_smooth(method=lm, formula= y~x,  se=FALSE,color="red",size=.4) +
+  # xlab("Latitude") + 
+  # ggtitle("Shannon vs Latitude") + 
+  theme_glab()
+
+
+```
+
+
+```{r}
+ggplot(prok_alpha_div,aes(x=lat,y=shannon)) +
+  geom_point(aes(fill=temp),size=3,stroke=.25,shape=21)  +
+  scale_fill_viridis(option="plasma") +
+  # geom_text(aes(label= station), size=5, hjust=-0.1, vjust=2.2) +
+  stat_poly_eq(formula = y ~ x, aes(label = paste(..rr.label.., sep = "~~~~")), parse = TRUE, size=5) +
+  geom_smooth(method=lm, formula= y~x,  se=FALSE,color="red",size=.4) +
+  # xlab("Latitude") + 
+  # ggtitle("Shannon vs Latitude") + 
+  theme_glab()
+```
+
+
+```{r}
+PCoA_j <- ordinate(norm, method = "PCoA", distance = "jaccard", weighted=T, trymax=1000)
+PCoA_j_un <- ordinate(norm, method = "PCoA", distance = "bray", binary = TRUE, weighted=F, trymax=1000)
+```
+
+
+```{r}
+DFpcoa_W <- data.frame(
+  pcoa1=PCoA_j$vectors[,1],
+  pcoa2=PCoA_j$vectors[,2],
+  temp=data.frame(sample_data(norm))$temp,
+  ph=data.frame(sample_data(norm))$ph,
+  lat=data.frame(sample_data(norm))$lat,
+  rock_type=data.frame(sample_data(norm))$rock_type,
+  h2s=data.frame(sample_data(norm))$h2s
+  
+)
+
+
+DFpcoa_W
+```
+
+
+```{r}
+ggplot(DFpcoa_W,aes(x=pcoa2,y=temp)) +
+  geom_point(aes(fill=ph),size=3,stroke=.25,shape=21)  +
+  scale_fill_viridis(option="plasma") +
+  # geom_text(aes(label= station), size=5, hjust=-0.1, vjust=2.2) +
+  stat_poly_eq(formula = x ~ y, aes(label = paste(..rr.label.., sep = "~~~~")), parse = TRUE, size=7) +
+  geom_smooth(method=lm, formula= y~x,  se=FALSE,color="red",size=.4) +
+  # xlab("Latitude") + 
+  # ggtitle("Shannon vs Latitude") + 
+  theme_glab()
+
+
+ggsave("plots_presentazione_evolmar/mm_4.png", dpi=300)
+
+```
+
+
+```{r}
+
+ggplot(DFpcoa_W,aes(x=pcoa2,y=ph)) +
+  geom_point(aes(fill=temp),size=3,stroke=.25,shape=21)  +
+  scale_fill_viridis(option="plasma") +
+  # geom_text(aes(label= station), size=5, hjust=-0.1, vjust=2.2) +
+  stat_poly_eq(formula = x ~ y, aes(label = paste(..rr.label.., sep = "~~~~")), parse = TRUE, size=7) +
+  geom_smooth(method=lm, formula= y~x,  se=FALSE,color="red",size=.4) +
+  # xlab("Latitude") + 
+  # ggtitle("Shannon vs Latitude") + 
+  theme_glab()
+
+ggsave("plots_presentazione_evolmar/mm_5.png", dpi=300)
+
+```
+
+
+```{r}
+ggplot(DFpcoa_W,aes(x=pcoa2,y=h2s)) +
+  geom_point(aes(fill=ph),size=3,stroke=.25,shape=21)  +
+  scale_fill_viridis(option="plasma") +
+  # geom_text(aes(label= station), size=5, hjust=-0.1, vjust=2.2) +
+  stat_poly_eq(formula = x ~ y, aes(label = paste(..rr.label.., sep = "~~~~")), parse = TRUE, size=7) +
+  geom_smooth(method=lm, formula= y~x,  se=FALSE,color="red",size=.4) +
+  # xlab("Latitude") + 
+  # ggtitle("Shannon vs Latitude") + 
+  theme_glab()
+```
+
+
+```{r}
+newenv <- merge(env_dataset, as.data.frame(t(dataset)), by="row.names", all.x =T)
+
+row.names(newenv) <- newenv$Row.names
+newenv$Row.names <- NULL
+newenv
+
+```
+
+```{r}
+rownames(dataset)
+```
+
+
+
+```{r}
+
+nicle_samples <- rownames(newenv[!is.na(newenv$Ni),])
+cobalt_samples <- rownames(newenv[!is.na(newenv$Co),])
+
+multimet_samples <- c(nicle_samples, cobalt_samples)
+
+multimet_df <- newenv[multimet_samples,] 
+multimet_df
+
+ggplot(multimet_df,aes(x=log10(Co),y=log10(Ni))) +
+  geom_point(aes(fill=cobalt_nickel),size=3,stroke=.25,shape=21)  +
+  scale_fill_viridis(option="plasma") +
+  # geom_text(aes(label= station), size=5, hjust=-0.1, vjust=2.2) +
+  # stat_poly_eq(formula = y ~ x, aes(label = paste(..rr.label.., sep = "~~~~")), parse = TRUE, size=7) +
+  geom_smooth(method=lm, formula= y~x,  se=FALSE,color="red",size=.4) +
+  # xlab("Latitude") + 
+  # ggtitle("Shannon vs Latitude") + 
+  theme_glab()
+
+```
+
+
+```{r}
+
+zinc_samples <- rownames(newenv[!is.na(newenv$Zn),])
+cobalt_samples <- rownames(newenv[!is.na(newenv$Co),])
+
+multimet_samples <- c(zinc_samples, cobalt_samples)
+
+multimet_df <- newenv[multimet_samples,] 
+multimet_df
+
+ggplot(multimet_df,aes(x=log10(Co),y=log10(Zn))) +
+  geom_point(aes(fill=cobalt_zinc),size=3,stroke=.25,shape=21)  +
+  scale_fill_viridis(option="plasma") +
+  # geom_text(aes(label= station), size=5, hjust=-0.1, vjust=2.2) +
+  # stat_poly_eq(formula = y ~ x, aes(label = paste(..rr.label.., sep = "~~~~")), parse = TRUE, size=7) +
+  geom_smooth(method=lm, formula= y~x,  se=FALSE,color="red",size=.4) +
+  # xlab("Latitude") + 
+  # ggtitle("Shannon vs Latitude") + 
+  theme_glab()
+
+```
+
+
+```{r}
+manganese_samples <- rownames(newenv[!is.na(newenv$Mn),])
+copper_samples <- rownames(newenv[!is.na(newenv$Cu),])
+
+multimet_samples <- c(manganese_samples, copper_samples)
+
+multimet_df <- newenv[multimet_samples,] 
+multimet_df
+
+ggplot(multimet_df,aes(x=log10(Cu),y=log10(Mn))) +
+  geom_point(aes(fill=copper_manganese),size=3,stroke=.25,shape=21)  +
+  scale_fill_viridis(option="plasma") +
+  # geom_text(aes(label= station), size=5, hjust=-0.1, vjust=2.2) +
+  # stat_poly_eq(formula = y ~ x, aes(label = paste(..rr.label.., sep = "~~~~")), parse = TRUE, size=7) +
+  geom_smooth(method=lm, formula= y~x,  se=FALSE,color="red",size=.4) +
+  # xlab("Latitude") + 
+  # ggtitle("Shannon vs Latitude") + 
+  theme_glab()
+```
+
+
+```{r}
+iron_samples <- rownames(newenv[!is.na(newenv$Fe),])
+zinc_samples <- rownames(newenv[!is.na(newenv$Zn),])
+
+multimet_samples <- c(zinc_samples, iron_samples)
+
+multimet_df <- newenv[multimet_samples,] 
+multimet_df
+
+ggplot(multimet_df,aes(x=log10(Fe),y=log10(Zn))) +
+  geom_point(aes(fill=iron_zinc),size=3,stroke=.25,shape=21)  +
+  scale_fill_viridis(option="plasma") +
+  # geom_text(aes(label= station), size=5, hjust=-0.1, vjust=2.2) +
+  # stat_poly_eq(formula = y ~ x, aes(label = paste(..rr.label.., sep = "~~~~")), parse = TRUE, size=7) +
+  geom_smooth(method=lm, formula= y~x,  se=FALSE,color="red",size=.4) +
+  # xlab("Latitude") + 
+  # ggtitle("Shannon vs Latitude") + 
+  theme_glab()
+
+
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r}
+
+plot_richness(norm, x="expID", measures = c("Shannon", "Simpson")) +
+  geom_boxplot(aes(fill=expID)) +
+  theme_glab()
+
+```
+
+
+```{r}
+PCoA_j <- ordinate(norm, method = "PCoA", distance = "jaccard", weighted=T, trymax=1000)
+PCoA_j_un <- ordinate(norm, method = "PCoA", distance = "jaccard",binary = TRUE, weighted=F, trymax=1000)
+
+```
+
+
+```{r fig.height=15, fig.width=20}
+
+plot_ordination(norm, PCoA_j, type="samples",title="PCoA unweighted Jaccard similarity") +
+  # geom_text_repel(aes(label=SideID), size = 5, color="gray32", min.segment.length = 0, seed = 42, box.padding = 0.3)+
+  geom_point(aes(color=temp, shape=as.factor(expID)),size=6, stroke=1) + 
+  scale_color_viridis_c() +
+  theme_glab(base_size = 24)
+
+```
+
+
+```{r}
+nmds_w <- distance(norm, method = "bray")
+nmds_uw <- distance(norm, method= "bray", binary=T)
+
+ord_w <- ordinate(norm, nmds_w, method="NMDS", trymax=1000)
+ord_uw <- ordinate(norm, nmds_uw, method="NMDS", trymax=1000)
+```
+
+
+
+```{r fig.height=15, fig.width=20}
+
+plot_ordination(norm, ord_w, type="samples",title="PCoA unweighted Jaccard similarity")+
+  geom_point(aes(color=province), size=6) + 
+  scale_color_viridis_d()+
+  theme_glab(base_size = 24)
+
+```
+
+
+```{r fig.height=15, fig.width=20}
+
+plot_ordination(norm, ord_w, type="samples",title="PCoA unweighted Jaccard similarity")+
+  geom_point(aes(color=temp), size=6) + 
+  scale_color_viridis_c()+
+  theme_glab(base_size = 24)
+```
+
+
+
+
+
+```{r fig.height=15, fig.width=20}
+
+plot_ordination(norm, ord_w, type="samples",title="PCoA unweighted Jaccard similarity")+
+  geom_point(aes(color=ph), size=6) + 
+  scale_color_viridis_c()+
+  theme_glab(base_size = 24)
+```
+
+
+
+
+```{r fig.height=15, fig.width=20}
+
+plot_ordination(norm, ord_w, type="samples",title="PCoA unweighted Jaccard similarity")+
+  geom_point(aes(color=alt), size=6) + 
+  scale_color_viridis_c()+
+  theme_glab(base_size = 24)
+```
+
+
+# Subsetting all the samples that have a specific metal
+```{r fig.height=15, fig.width=20}
+
+
+vanadium_samples <- rownames(env_dataset[!is.na(env_dataset$V),])
+van_norm <- prune_samples(vanadium_samples, norm)
+
+van_ord <- ordinate(norm, distance(van_norm, method = "bray"), binary= T, method="NMDS", trymax=1000)
+
+plot_ordination(van_norm, van_ord, type="samples",title="PCoA unweighted Jaccard similarity")+
+  geom_point(aes(color=log(V)), size=6) + 
+  scale_color_viridis_c()+
+  theme_glab(base_size = 24)
+
+```
+
+
+```{r fig.height=15, fig.width=20}
+
+
+iron_samples <- rownames(env_dataset[!is.na(env_dataset$Fe),])
+iron_norm <- prune_samples(iron_samples, norm)
+
+iron_ord <- ordinate(norm, distance(iron_norm, method = "bray"), method="NMDS", trymax=1000)
+
+plot_ordination(iron_norm, iron_ord, type="samples",title="PCoA unweighted Jaccard similarity")+
+  geom_point(aes(color=log(Fe)), size=6) + 
+  scale_color_viridis_c()+
+  theme_glab(base_size = 24)
+```
+
+```{r fig.height=15, fig.width=20}
+
+
+copper_samples <- rownames(env_dataset[!is.na(env_dataset$Cu),])
+copper_norm <- prune_samples(copper_samples, norm)
+
+copper_ord <- ordinate(norm, distance(copper_norm, method = "bray"), method="NMDS", trymax=1000)
+
+plot_ordination(copper_norm, copper_ord, type="samples",title="PCoA unweighted Jaccard similarity")+
+  geom_point(aes(color=log(Cu)), size=6) + 
+  scale_color_viridis_c()+
+  theme_glab(base_size = 24)
+
+
+```
+
+
+
+
+
+```{r fig.height=15, fig.width=20}
+
+
+zinc_samples <- rownames(env_dataset[!is.na(env_dataset$Zn),])
+zinc_norm <- prune_samples(zinc_samples, norm)
+
+zinc_ord <- ordinate(norm, distance(zinc_norm, method = "bray"), binary= T, method="NMDS", trymax=1000)
+
+plot_ordination(zinc_norm, zinc_ord, type="samples",title="PCoA unweighted Jaccard similarity")+
+  geom_point(aes(color=log(Zn)), size=6) + 
+  scale_color_viridis_c()+
+  theme_glab(base_size = 24)
+
+
+```
+
+```{r fig.height=15, fig.width=20}
+
+
+molyb_samples <- rownames(env_dataset[!is.na(env_dataset$Mo),])
+molyb_norm <- prune_samples(molyb_samples, norm)
+
+molyb_ord <- ordinate(norm, distance(molyb_norm, method = "bray"), binary= T, method="NMDS", trymax=1000)
+
+plot_ordination(molyb_norm, molyb_ord, type="samples",title="PCoA unweighted Jaccard similarity")+
+  geom_point(aes(color=log(Mo)), size=6) + 
+  scale_color_viridis_c()+
+  theme_glab(base_size = 24)
+
+
+```
+
+
+```{r fig.height=15, fig.width=20}
+
+
+cobalt_samples <- rownames(env_dataset[!is.na(env_dataset$Co),])
+cobalt_norm <- prune_samples(cobalt_samples, norm)
+
+cobalt_ord <- ordinate(norm, distance(cobalt_norm, method = "bray"), binary= T, method="NMDS", trymax=1000)
+
+plot_ordination(cobalt_norm, cobalt_ord, type="samples",title="PCoA unweighted Jaccard similarity")+
+  geom_point(aes(color=log(Co)), size=6) + 
+  scale_color_viridis_c()+
+  theme_glab(base_size = 24)
+
+
+```
+
+
+```{r fig.height=15, fig.width=20}
+
+
+nickel_samples <- rownames(env_dataset[!is.na(env_dataset$Ni),])
+nickel_norm <- prune_samples(nickel_samples, norm)
+
+nickel_ord <- ordinate(norm, distance(nickel_norm, method = "bray"), binary= T, method="NMDS", trymax=1000)
+
+plot_ordination(nickel_norm, nickel_ord, type="samples",title="PCoA unweighted Jaccard similarity")+
+  geom_point(aes(color=log(Ni)), size=6) + 
+  scale_color_viridis_c()+
+  theme_glab(base_size = 24)
+
+
+```
+
+
+
+```{r fig.height=15, fig.width=20}
+
+
+manganese_samples <- rownames(env_dataset[!is.na(env_dataset$Mn),])
+manganese_norm <- prune_samples(manganese_samples, norm)
+
+manganese_ord <- ordinate(norm, distance(manganese_norm, method = "bray"), binary= T, method="NMDS", trymax=1000)
+
+plot_ordination(manganese_norm, manganese_ord, type="samples",title="PCoA unweighted Jaccard similarity")+
+  geom_point(aes(color=log(Mn)), size=6) + 
+  scale_color_viridis_c()+
+  theme_glab(base_size = 24)
+
+
+```
+
+```{r fig.height=15, fig.width=20}
+
+
+magnesium_samples <- rownames(env_dataset[!is.na(env_dataset$Mg),])
+magnesium_norm <- prune_samples(magnesium_samples, norm)
+
+magnesium_ord <- ordinate(norm, distance(magnesium_norm, method = "bray"), binary= T, method="NMDS", trymax=1000)
+
+plot_ordination(magnesium_norm, magnesium_ord, type="samples",title="PCoA unweighted Jaccard similarity")+
+  geom_point(aes(color=log(Mg)), size=6) + 
+  scale_color_viridis_c()+
+  theme_glab(base_size = 24)
+
+
+```
+
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+

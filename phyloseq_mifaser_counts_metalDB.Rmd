@@ -1,0 +1,626 @@
+---
+title: "R Notebook"
+---
+
+```{r}
+library(phyloseq)
+library(ggplot2)
+library(vegan)
+library(viridis)
+library(tidyverse)
+library(ggrepel)
+library(corrplot)
+library(ggpmisc)
+library(microbiome)
+```
+
+
+```{r}
+
+
+# Setting up the Giovannelli Lab plot theme
+theme_glab <- function(base_size = 11,
+                    base_family = "",
+                    base_line_size = base_size / 180,
+                    base_rect_size = base_size / 180) {
+   
+    font <- "Helvetica" #assign font family up front
+   
+    theme_bw(base_size = base_size,
+                base_family = base_family,
+                base_line_size = base_line_size) %+replace%
+    theme(
+        legend.background =  element_blank(),
+        legend.title =       element_text(color = rgb(100, 100, 100, maxColorValue = 255),
+                                          size = rel(0.65),
+                                         hjust = 0),
+        legend.text =        element_text(color = rgb(100, 100, 100, maxColorValue = 255),
+                                          size = rel(0.65)),
+        legend.key.size =    unit(0.8, "lines"),
+     
+      plot.title = element_text(
+        color = rgb(100, 100, 100, maxColorValue = 255),
+        hjust = 0),
+       
+      axis.title = element_text(
+        color = rgb(100, 100, 100, maxColorValue = 255),
+        size = rel(0.65)),
+      axis.text = element_text(
+        color = rgb(100, 100, 100, maxColorValue = 255),
+        size = rel(0.65)),
+       
+      plot.caption = element_text(
+        color = rgb(100, 100, 100, maxColorValue = 255),
+        size = rel(0.35),
+        hjust = 1),
+       
+      panel.grid.major = element_blank(),  
+      panel.grid.minor = element_blank(),  
+      panel.border = element_rect(fill = NA, colour = rgb(100, 100, 100, maxColorValue = 255)),
+
+     
+      complete = TRUE
+    )
+}
+
+
+```
+
+
+```{r}
+
+# Importing the data
+dataset <- read.csv("mifaser_counts_metalDB.tsv", header=T, sep="\t", row.names=1)
+env_dataset <- read.csv("./env_datasets/evolmar_env_dataset_metals_F_S.csv", header=T, sep=",", row.names=1)
+tax <- as.matrix(read.csv("taxa_table_metalsDB.csv", header=T, sep=",", row.names=1))
+
+
+```
+
+
+```{r}
+# dataset
+
+```
+
+
+```{r}
+# env_dataset
+```
+
+
+```{r}
+
+phy <- phyloseq(
+  otu_table(dataset, taxa_are_rows = T), 
+  sample_data(env_dataset), 
+  tax_table(tax)
+)
+phy
+
+phy = subset_samples(phy, sample_names(phy) != "CR19_EP_F")
+```
+
+```{r}
+dataset
+```
+
+
+
+```{r}
+norm <- transform_sample_counts(phy, function(x) ((x / sum(x, na.rm=T))*median(colSums(otu_table(phy), na.rm=T))))
+norm
+```
+
+
+```{r}
+relat_norm <- transform_sample_counts(norm, function(x) ((x / sum(x, na.rm=T))))
+```
+
+
+
+```{r fig.height=15, fig.width=20}
+# Plot Relative Abundance by phyla for each station divide by factor1
+plot_bar(relat_norm, fill="metal") + 
+  labs(x="", y="Relative abundance (%)", fill="metal") +
+  theme_glab(base_size = 20) +
+  theme(axis.text.x = element_text(angle = 70, size = 0)) +
+  facet_grid(~expID, drop = T, scales = "free_x", space = "free_x")
+
+
+# ggsave("./plots_presentazione_evolmar/metal_1.png", dpi=150)
+```
+
+
+```{r fig.height=15, fig.width=20}
+
+met <- tax_glom(relat_norm, "metal", NArm = F )
+top5 <- sort(taxa_sums(met), decreasing = T)[1:5]
+met5 <- prune_taxa(names(top5), met)
+
+plot_bar(met5, fill="metal") +
+  labs(x="", y="Relative abundance (%)", fill="metal") +
+  theme_glab(base_size = 20) +
+  theme(axis.text.x = element_text(angle = 70, size = 0)) +
+  facet_grid(~expID, drop = T, scales = "free_x", space = "free_x")
+```
+
+
+```{r}
+
+## Testing for differences in alpha diversity between the Locations
+prok_alpha_div <- data.frame(estimate_richness(phy, measures=c("Shannon")), 
+                             estimate_richness(phy, measures=c("Simpson")),
+                             estimate_richness(phy, measures=c("Observed")),
+                             data.frame(sample_data(phy)$lat),
+                             data.frame(sample_data(phy)$temp),
+                             data.frame(sample_data(phy)$ph),
+                             data.frame(sample_data(phy)$rock_type),
+                             data.frame(sample_data(phy)$h2s))
+
+
+
+colnames(prok_alpha_div) <- c ("shannon","simpson","observed", "lat", "temp", "ph", 
+  "rock_type", "h2s"  )
+prok_alpha_div
+```
+
+
+```{r}
+# lat
+kruskal.test(prok_alpha_div$shannon~prok_alpha_div$lat)
+# kruskal.test(prok_alpha_div$simpson~prok_alpha_div$lat)
+# kruskal.test(prok_alpha_div$observed~prok_alpha_div$lat)
+
+# Temp
+kruskal.test(prok_alpha_div$shannon~prok_alpha_div$temp)
+# kruskal.test(prok_alpha_div$simpson~prok_alpha_div$temp)
+# kruskal.test(prok_alpha_div$observed~prok_alpha_div$temp)
+
+# ph
+kruskal.test(prok_alpha_div$shannon~prok_alpha_div$ph)
+# kruskal.test(prok_alpha_div$simpson~prok_alpha_div$ph)
+# kruskal.test(prok_alpha_div$observed~prok_alpha_div$ph)
+
+# h2s
+kruskal.test(prok_alpha_div$shannon~prok_alpha_div$h2s)
+# kruskal.test(prok_alpha_div$simpson~prok_alpha_div$h2s)
+# kruskal.test(prok_alpha_div$observed~prok_alpha_div$h2s)
+
+# rock_type
+kruskal.test(prok_alpha_div$shannon~prok_alpha_div$rock_type)
+# kruskal.test(prok_alpha_div$simpson~prok_alpha_div$rock_type)
+# kruskal.test(prok_alpha_div$observed~prok_alpha_div$rock_type)
+
+```
+
+
+```{r fig.width=14}
+ggplot(prok_alpha_div,aes(x=temp,y=shannon)) +
+  geom_point(aes(fill=ph),size=5,stroke=.25,shape=21)  +
+  scale_fill_viridis(option="plasma") +
+  # geom_text(aes(label= station), size=5, hjust=-0.1, vjust=2.2) +
+  stat_poly_eq(formula = y ~ x, aes(label = paste(..rr.label.., sep = "~~~~")), parse = TRUE, size=7) +
+  geom_smooth(method=lm, formula= y~x,  se=FALSE,color="red",size=.4) +
+  # xlab("Latitude") + 
+  # ggtitle("Shannon vs Latitude") + 
+  theme_glab(base_size = 15)
+
+ggsave("./plots_presentazione_evolmar/metal_3.png", dpi=300)
+
+```
+
+
+
+```{r}
+ggplot(prok_alpha_div,aes(x=ph,y=shannon)) +
+  geom_point(aes(fill=temp),size=3,stroke=.25,shape=21)  +
+  scale_fill_viridis(option="plasma") +
+  # geom_text(aes(label= station), size=5, hjust=-0.1, vjust=2.2) +
+  stat_poly_eq(formula = y ~ x, aes(label = paste(..rr.label.., sep = "~~~~")), parse = TRUE, size=7) +
+  geom_smooth(method=lm, formula= y~x,  se=FALSE,color="red",size=.4) +
+  # xlab("Latitude") + 
+  # ggtitle("Shannon vs Latitude") + 
+  theme_glab()
+
+ggsave("./plots_presentazione_evolmar/metal_4.png", dpi=300)
+
+```
+
+
+```{r}
+ggplot(prok_alpha_div,aes(x=h2s,y=shannon)) +
+  geom_point(aes(fill=temp),size=3,stroke=.25,shape=21)  +
+  scale_fill_viridis(option="plasma") +
+  # geom_text(aes(label= station), size=5, hjust=-0.1, vjust=2.2) +
+  stat_poly_eq(formula = y ~ x, aes(label = paste(..rr.label.., sep = "~~~~")), parse = TRUE, size=7) +
+  geom_smooth(method=lm, formula= y~x,  se=FALSE,color="red",size=.4) +
+  # xlab("Latitude") + 
+  # ggtitle("Shannon vs Latitude") + 
+  theme_glab()
+
+```
+
+```{r}
+ggplot(prok_alpha_div,aes(x=lat,y=shannon)) +
+  geom_point(aes(fill=temp),size=3,stroke=.25,shape=21)  +
+  scale_fill_viridis(option="plasma") +
+  # geom_text(aes(label= station), size=5, hjust=-0.1, vjust=2.2) +
+  stat_poly_eq(formula = y ~ x, aes(label = paste(..rr.label.., sep = "~~~~")), parse = TRUE, size=5) +
+  geom_smooth(method=lm, formula= y~x,  se=FALSE,color="red",size=.4) +
+  # xlab("Latitude") + 
+  # ggtitle("Shannon vs Latitude") + 
+  theme_glab()
+
+```
+
+
+```{r}
+PCoA_j <- phyloseq::ordinate(norm, method = "PCoA", distance = "bray", weighted=T, trymax=1000)
+PCoA_j_un <- phyloseq::ordinate(norm, method = "PCoA", distance = "bray", binary = TRUE, weighted=F, trymax=1000)
+
+```
+
+
+```{r fig.width=15, fig.height=10}
+
+plot_ordination(norm, PCoA_j, type="samples",title="PCoA weighted Jaccard similarity") +
+  geom_point(aes(fill=expID),shape=21,size=8,color="black",stroke=0.25) + 
+  scale_fill_viridis_d()+
+  theme_glab() + theme(legend.position = "right")
+
+```
+
+
+
+```{r}
+DFpcoa_W <- data.frame(
+  pcoa1=PCoA_j$vectors[,1],
+  pcoa2=PCoA_j$vectors[,2],
+  temp=data.frame(sample_data(norm))$temp,
+  ph=data.frame(sample_data(norm))$ph,
+  lat=data.frame(sample_data(norm))$lat,
+  rock_type=data.frame(sample_data(norm))$rock_type,
+  h2s=data.frame(sample_data(norm))$h2s,
+  expID=data.frame(sample_data(norm))$expID
+
+)
+
+
+DFpcoa_W
+```
+
+
+```{r fig.width=13}
+ggplot(DFpcoa_W,aes(x=temp,y=pcoa2)) +
+  geom_point(aes(fill=ph),size=3,stroke=.25,shape=21)  +
+  scale_fill_viridis_c(option="maco", direction = -1) +
+  # geom_text(aes(label= station), size=5, hjust=-0.1, vjust=2.2) +
+  stat_poly_eq(formula = y ~ x, aes(label = paste(..rr.label.., sep = "~~~~")), parse = TRUE, size=7, vjust=10) +
+  geom_smooth(method=lm, formula= y~x,  se=FALSE,color="red",size=.4) +
+  # xlab("Latitude") + 
+  # ggtitle("Shannon vs Latitude") + 
+  theme_glab(base_size=13)
+
+
+ggsave("./plots_presentazione_evolmar/metal_16.svg", dpi=300)
+```
+
+
+```{r fig.width=13}
+ggplot(DFpcoa_W,aes(x=ph,y=pcoa2)) +
+  geom_point(aes(fill=temp),size=3,stroke=.25,shape=21)  +
+  scale_fill_viridis_c(option="plasma") +
+  # geom_text(aes(label= station), size=5, hjust=-0.1, vjust=2.2) +
+  stat_poly_eq(formula = y ~ x, aes(label = paste(..rr.label.., sep = "~~~~")), parse = TRUE, size=7) +
+  geom_smooth(method=lm, formula= y~x,  se=FALSE,color="red",size=.4) +
+  # xlab("Latitude") + 
+  # ggtitle("Shannon vs Latitude") + 
+  theme_glab(base_size=13)
+
+ggsave("./plots_presentazione_evolmar/metal_21.svg", dpi=300)
+
+```
+
+
+```{r}
+ggplot(DFpcoa_W,aes(x=pcoa1,y=h2s)) +
+  geom_point(aes(fill=ph),size=3,stroke=.25,shape=21)  +
+  scale_fill_viridis(option="plasma") +
+  # geom_text(aes(label= station), size=5, hjust=-0.1, vjust=2.2) +
+  stat_poly_eq(formula = x ~ y, aes(label = paste(..rr.label.., sep = "~~~~")), parse = TRUE, size=7) +
+  geom_smooth(method=lm, formula= y~x,  se=FALSE,color="red",size=.4) +
+  # xlab("Latitude") + 
+  # ggtitle("Shannon vs Latitude") + 
+  theme_glab()
+
+```
+
+
+
+
+```{r}
+newenv <- merge(env_dataset, as.data.frame(t(dataset)), by="row.names", all.x =T)
+
+row.names(newenv) <- newenv$Row.names
+newenv$Row.names <- NULL
+newenv
+
+
+```
+
+
+```{r}
+
+iron_samples <- rownames(newenv[!is.na(newenv$Fe),])
+iron_df <- newenv[iron_samples,] 
+iron_df
+
+ggplot(iron_df,aes(x=log10(Fe), y=log10(iron))) +
+  geom_point(aes(fill=ph),size=3,stroke=.25,shape=21)  +
+  scale_fill_viridis_c(option="maco", direction = -1) +
+  # geom_text(aes(label= station), size=5, hjust=-0.1, vjust=2.2) +
+  stat_poly_eq(formula = y ~ x, aes(label = paste(..rr.label.., sep = "~~~~")), parse = TRUE, size=7) +
+  geom_smooth(method=lm, formula= y~x,  se=FALSE,color="red",size=.4) +
+  # xlab("Latitude") + 
+  # ggtitle("Shannon vs Latitude") + 
+  theme_glab()
+
+ggsave("./plots_presentazione_evolmar/metal_17.svg", dpi=300)
+
+
+ggplot(iron_df,aes(x=log10(iron),y=log10(Fe))) +
+  geom_point(aes(fill=temp),size=3,stroke=.25,shape=21)  +
+  scale_fill_viridis(option="plasma") +
+  # geom_text(aes(label= station), size=5, hjust=-0.1, vjust=2.2) +
+  # stat_poly_eq(formula = y ~ x, aes(label = paste(..rr.label.., sep = "~~~~")), parse = TRUE, size=7) +
+  geom_smooth(method=lm, formula= y~x,  se=FALSE,color="red",size=.4) +
+  # xlab("Latitude") + 
+  # ggtitle("Shannon vs Latitude") + 
+  theme_glab()
+
+# ggsave("./plots_presentazione_evolmar/metal_8.png", dpi=300)
+
+```
+
+
+```{r}
+
+copper_samples <- rownames(newenv[!is.na(newenv$Cu),])
+copper_df <- newenv[copper_samples,] 
+copper_df
+
+ggplot(copper_df,aes(x=copper,y=log10(Cu))) +
+  geom_point(aes(fill=ph),size=3,stroke=.25,shape=21)  +
+  scale_fill_viridis(option="plasma") +
+  # geom_text(aes(label= station), size=5, hjust=-0.1, vjust=2.2) +
+  # stat_poly_eq(formula = y ~ x, aes(label = paste(..rr.label.., sep = "~~~~")), parse = TRUE, size=7) +
+  geom_smooth(method=lm, formula= y~x,  se=FALSE,color="red",size=.4) +
+  # xlab("Latitude") + 
+  # ggtitle("Shannon vs Latitude") + 
+  theme_glab()
+
+
+
+# ggplot(copper_df,aes(x=copper,y=log10(Cu))) +
+#   geom_point(aes(fill=rock_type),size=3,stroke=.25,shape=21)  +
+#   scale_fill_viridis_d(option="plasma") +
+#   # geom_text(aes(label= station), size=5, hjust=-0.1, vjust=2.2) +
+#   # stat_poly_eq(formula = y ~ x, aes(label = paste(..rr.label.., sep = "~~~~")), parse = TRUE, size=7) +
+#   geom_smooth(method=lm, formula= x~y,  se=FALSE,color="red",size=.4) +
+#   # xlab("Latitude") + 
+#   # ggtitle("Shannon vs Latitude") + 
+#   theme_glab()
+
+```
+
+
+```{r}
+cobalt_samples <- rownames(newenv[!is.na(newenv$Co),])
+cobalt_df <- newenv[cobalt_samples,] 
+cobalt_df
+
+ggplot(cobalt_df,aes(x=log10(Co),y=log10(cobalt))) +
+  geom_point(aes(fill=ph),size=3,stroke=.25,shape=21)  +
+  scale_fill_viridis_c(option="maco", direction = -1) +
+  # geom_text(aes(label= station), size=5, hjust=-0.1, vjust=2.2) +
+  stat_poly_eq(formula = y ~ x, aes(label = paste(..rr.label.., sep = "~~~~")), parse = TRUE, size=7) +
+  geom_smooth(method=lm, formula= y~x,  se=FALSE,color="red",size=.4) +
+  # xlab("Latitude") + 
+  # ggtitle("Shannon vs Latitude") + 
+  theme_glab()
+
+ggsave("./plots_presentazione_evolmar/metal_18.svg", dpi=300)
+```
+
+
+```{r}
+
+nickel_samples <- rownames(newenv[!is.na(newenv$Ni),])
+nickel_df <- newenv[nickel_samples,] 
+nickel_df
+
+ggplot(nickel_df,aes(x=log10(nickel),y=log10(Ni))) +
+  geom_point(aes(fill=ph),size=3,stroke=.25,shape=21)  +
+  scale_fill_viridis(option="plasma") +
+  # geom_text(aes(label= station), size=5, hjust=-0.1, vjust=2.2) +
+  # stat_poly_eq(formula = y ~ x, aes(label = paste(..rr.label.., sep = "~~~~")), parse = TRUE, size=7) +
+  geom_smooth(method=lm, formula= y~x,  se=FALSE,color="red",size=.4) +
+  # xlab("Latitude") + 
+  # ggtitle("Shannon vs Latitude") + 
+  theme_glab()
+
+ggsave("./plots_presentazione_evolmar/metal_10.png", dpi=300)
+
+```
+
+
+```{r}
+zinc_samples <- rownames(newenv[!is.na(newenv$Zn),])
+zinc_df <- newenv[zinc_samples,] 
+zinc_df
+
+ggplot(zinc_df,aes(x=log10(Zn),y=log10(zinc))) +
+  geom_point(aes(fill=ph),size=3,stroke=.25,shape=21)  +
+  scale_fill_viridis_c(option="maco", direction = -1) +
+  # geom_text(aes(label= station), size=5, hjust=-0.1, vjust=2.2) +
+  stat_poly_eq(formula = y ~ x, aes(label = paste(..rr.label.., sep = "~~~~")), parse = TRUE, size=7) +
+  geom_smooth(method=lm, formula= y~x,  se=FALSE,color="red",size=.4) +
+  # xlab("Latitude") + 
+  # ggtitle("Shannon vs Latitude") + 
+  theme_glab()
+
+ggsave("./plots_presentazione_evolmar/metal_19.svg", dpi=300)
+
+```
+
+
+```{r}
+molybdate_samples <- rownames(newenv[!is.na(newenv$Mo),])
+molybdate_df <- newenv[molybdate_samples,] 
+molybdate_df
+
+ggplot(molybdate_df,aes(x=log10(molybdate),y=log10(Mo))) +
+  geom_point(aes(fill=temp),size=3,stroke=.25,shape=21)  +
+  scale_fill_viridis(option="plasma") +
+  # geom_text(aes(label= station), size=5, hjust=-0.1, vjust=2.2) +
+  # stat_poly_eq(formula = y ~ x, aes(label = paste(..rr.label.., sep = "~~~~")), parse = TRUE, size=7) +
+  geom_smooth(method=lm, formula= y~x,  se=FALSE,color="red",size=.4) +
+  # xlab("Latitude") + 
+  # ggtitle("Shannon vs Latitude") + 
+  theme_glab()
+
+
+```
+
+
+```{r}
+manganese_samples <- rownames(newenv[!is.na(newenv$Mn),])
+manganese_df <- newenv[manganese_samples,] 
+manganese_df
+
+ggplot(manganese_df,aes(x=log10(manganese),y=log10(Mn))) +
+  geom_point(aes(fill=temp),size=3,stroke=.25,shape=21)  +
+  scale_fill_viridis(option="plasma") +
+  # geom_text(aes(label= station), size=5, hjust=-0.1, vjust=2.2) +
+  # stat_poly_eq(formula = y ~ x, aes(label = paste(..rr.label.., sep = "~~~~")), parse = TRUE, size=7) +
+  geom_smooth(method=lm, formula= y~x,  se=FALSE,color="red",size=.4) +
+  # xlab("Latitude") + 
+  # ggtitle("Shannon vs Latitude") + 
+  theme_glab()
+```
+
+
+```{r}
+magnesium_samples <- rownames(newenv[!is.na(newenv$mg),])
+magnesium_df <- newenv[magnesium_samples,] 
+magnesium_df
+
+ggplot(magnesium_df,aes(x=log10(mg),y=log10(magnesium))) +
+  geom_point(aes(fill=ph),size=3,stroke=.25,shape=21)  +
+  scale_fill_viridis_c(option="maco", direction = -1) +
+  # geom_text(aes(label= station), size=5, hjust=-0.1, vjust=2.2) +
+  stat_poly_eq(formula = y ~ x, aes(label = paste(..rr.label.., sep = "~~~~")), parse = TRUE, size=7) +
+  geom_smooth(method=lm, formula= y~x,  se=FALSE,color="red",size=.4) +
+  # xlab("Latitude") + 
+  # ggtitle("Shannon vs Latitude") + 
+  theme_glab()
+
+ggsave("./plots_presentazione_evolmar/metal_20.svg", dpi=300)
+```
+
+
+```{r}
+nmds_w <- distance(norm, method = "bray")
+nmds_uw <- distance(norm, method= "bray", binary=T)
+
+ord_w <- ordinate(norm, nmds_w, method="NMDS", trymax=1000)
+ord_uw <- ordinate(norm, nmds_uw, method="NMDS", trymax=1000)
+```
+
+
+
+
+```{r fig.height=15, fig.width=20}
+
+plot_ordination(norm, ord_w, type="samples",title=paste0("NMDS Weighted Jaccard similarity, Stress: ", ord_w$stress))+
+  geom_point(aes(color=temp), size=6) + 
+  scale_color_viridis_c()+
+  theme_glab(base_size = 24)
+
+ggsave("./plots_presentazione_evolmar/metal_13.png", dpi=300)
+
+```
+
+
+
+
+```{r fig.height=15, fig.width=20}
+
+
+plot_ordination(norm, ord_uw, type="samples",title=paste0("NMDS UNweighted Jaccard similarity, Stress: ", ord_uw$stress))+
+  geom_point(aes(color=temp), size=6) + 
+  scale_color_viridis_c()+
+  theme_glab(base_size = 24)
+
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+
